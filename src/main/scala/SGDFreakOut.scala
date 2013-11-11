@@ -27,18 +27,11 @@ object SGDFreakOut {
     def foldMap[A, B](f: A => B)(as: Seq[A])(implicit m: Monoid[B]): B =
         as.map(f).foldLeft(m.zero)(m.plus)
 
-    // val bom = many.foldLeft(SGDWeights(1, Vector(1.1, 0.1))) { (x: SGDWeights, y) => 
-    //     x.asInstanceOf[SGDMonoid[(Double, IndexedSeq[Double])]].plus(x.asInstanceOf[SGDWeights], SGDPos(y))
-    // }
+    val bom = many.foldLeft(SGDWeights(1, Vector(1.1, 0.1))) { (x: SGDWeights, y) => 
+        x.asInstanceOf[SGDMonoid[(Double, IndexedSeq[Double])]].plus(x.asInstanceOf[SGDWeights], SGDPos(y))
+    }
 
-    val tmp = (x: (Double, IndexedSeq[Double])) => SGDPos(x)
-    val o = foldMap(tmp)(many)(sgdMonoid)
-
-
-    println(o)
-
-
-
+    
     println(sgdTheta)
   }
 
