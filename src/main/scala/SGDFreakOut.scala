@@ -19,7 +19,7 @@ object SGDFreakOut {
     // Look for iteration 78 forward and the algorithm freaks out after it converges
     simulatedData foreach { x =>
       coefJavaStyle = sgdMonoid.plus(coefJavaStyle, SGDPos(x))
-      println("new weights", coefJavaStyle, "new data", SGDPos(x))
+      println("current coefficients: ", coefJavaStyle, "new observation: ", SGDPos(x))
     }
 
     // Scala style
