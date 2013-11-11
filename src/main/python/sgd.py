@@ -11,8 +11,6 @@ from sklearn.datasets.samples_generator import make_regression
 X, Y = make_regression(n_samples=10, n_features=1, n_informative=1, random_state=0, noise=0)
 
 
-
-
 X = np.array([[x] for x in xrange(100)])
 Y = np.array([x for x in xrange(100)]) 
 

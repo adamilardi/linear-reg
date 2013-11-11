@@ -6,33 +6,28 @@ object SGDFreakOut {
 
   def main(args: Array[String]): Unit = {
 
-    //implicit val standardMonoid = new SGDMonoid(SGD.constantStep(0.001), SGD.linearGradient)
+    val sgdMonoid = new SGDMonoid(SGD.constantStep(0.001), SGD.linearGradient)
 
-
-    implicit val sgdMonoid: Monoid[SGD[(Double, IndexedSeq[Double])]] = new SGDMonoid(SGD.constantStep(0.001), SGD.linearGradient)
-
-    val many = (1 to 80).map { x => 
-        x.toDouble -> IndexedSeq[Double](x)
+    val simulatedData = (1 to 80).map { x => 
+      x.toDouble -> IndexedSeq[Double](x)
     }
 
-
+    // Java Style
     val weights = SGDWeights(1, Vector(1.1, 0.1))
-    var sgdTheta = sgdMonoid.plus(weights, SGDZero)
+    var coefJavaStyle = sgdMonoid.plus(weights, SGDZero)
 
-    many foreach { x => 
-        sgdTheta = sgdMonoid.plus(sgdTheta, SGDPos(x))
-        println("new weights", sgdTheta, "new data", SGDPos(x))
+    // Look for iteration 78 forward and the algorithm freaks out after it converges
+    simulatedData foreach { x =>
+      coefJavaStyle = sgdMonoid.plus(coefJavaStyle, SGDPos(x))
+      println("new weights", coefJavaStyle, "new data", SGDPos(x))
     }
 
-    def foldMap[A, B](f: A => B)(as: Seq[A])(implicit m: Monoid[B]): B =
-        as.map(f).foldLeft(m.zero)(m.plus)
-
-    val bom = many.foldLeft(SGDWeights(1, Vector(1.1, 0.1))) { (x: SGDWeights, y) => 
-        x.asInstanceOf[SGDMonoid[(Double, IndexedSeq[Double])]].plus(x.asInstanceOf[SGDWeights], SGDPos(y))
+    // Scala style
+    val coefsScalaStyle = simulatedData.foldLeft(SGDWeights(1, Vector(1.1, 0.1)): SGD[(Double, IndexedSeq[Double])]) { (x: SGD[(Double, IndexedSeq[Double])], y) => 
+      sgdMonoid.plus(x, SGDPos(y))
     }
 
-    
-    println(sgdTheta)
+    println(coefJavaStyle, coefsScalaStyle)
   }
 
 }
